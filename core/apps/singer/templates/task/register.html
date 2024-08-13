@@ -1,0 +1,51 @@
+{% extends 'include/guest.html' %}
+{% block body %}
+    <h1>{{title}}</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="container">
+            <div class="col-lg-6 mx-auto">
+                <div class="card shadow mb-2">
+                    <div class="card-header bg-transparent p-3">
+                        <h4 class="m-0">Регистрация</h4>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="input-group mb-2">
+                            <span class="input-group-text" id="inputGroup-sizing-default">{{form.username.label}}</span>
+                            {{form.username}}{{form.username.errors}}
+                        </div>
+
+                        <div class="input-group mb-2">
+                            <span class="input-group-text" id="inputGroup-sizing-default">{{form.last_name.label}}</span>
+                            {{form.last_name}}{{form.last_name.errors}}
+                        </div>
+
+                        <div class="input-group mb-2">
+                            <span class="input-group-text" id="inputGroup-sizing-default">{{form.first_name.label}}</span>
+                            {{form.first_name}}{{form.first_name.errors}}
+                        </div>
+
+                        <div class="input-group mb-2">
+                            <span class="input-group-text" id="inputGroup-sizing-default">{{form.email.label}}</span>
+                            {{form.email}}{{form.email.errors}}
+                        </div>
+
+                        <div class="input-group mb-2">
+                            <span class="input-group-text"><i class="bi bi-key"></i>{{form.password1.label}}</span>
+                            {{form.password1}}{{form.password1.errors}}
+                        </div>
+                        <div class="input-group mb-2">
+                            <span class="input-group-text"><i class="bi bi-key-fill"></i>{{form.password2.label}}</span>
+                            {{form.password2}}{{form.password2.errors}}
+                        </div>
+
+                        <button class="btn btn-primary col-12">Создать 🎉</button>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
