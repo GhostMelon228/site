@@ -151,6 +151,20 @@ class UserRegistrationForm(UserCreationForm):
 
         return super().is_valid()
 
+class UserLoginForm(AuthenticationForm):
+    def is_valid(self):
+        
+        errors = self.errors.as_data()
+        for field in self.fields:
+            if field not in errors:
+                class_ = "form-control is-valid"
+            else:
+                class_ = "form-control is-invalid"
+            self.fields[field].widget.attrs.update(
+                {'class': class_}
+            )
+        return super().is_valid()
+
 
 
 class TaskCreateForm(forms.ModelForm):

@@ -2,14 +2,15 @@ from typing import Any
 from django.db.models.query import QuerySet
 from django.forms import BaseModelForm
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db.models import Prefetch
 from django.urls import reverse
-from core.apps.singer.forms import UserRegistrationForm
+from core.apps.singer.forms import UserRegistrationForm, UserLoginForm
 
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import View, ListView, DetailView, CreateView, TemplateView
 from core.apps.singer.models import Task, Category
 from core.apps.minor.models import UserTaskEnroll, UserAnswers, FavouriteTask, Drugs
 
@@ -25,7 +26,7 @@ class UserRegistrationView(CreateView):
     context_object_name="form"
 
     def post(self, request, *args, **kwargs):
-        form = UserRegistrationForm(request.POST)
+        form = self.form_class(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.save()
@@ -34,6 +35,32 @@ class UserRegistrationView(CreateView):
         else:
             messages.error(request, 'Ошибка регистрации')
             return render(request, self.template_name, {'form': form})
+
+class UserLoginView(TemplateView):
+
+    form_class = UserLoginForm
+    template_name = 'task/login.html'
+
+    def get(self, request):
+        form = self.form_class()
+        return render(request, self.template_name, context={'form': form})
+
+    def post(self, request):
+        form = self.form_class(data=request.POST)
+        if form.is_valid():
+            print(form.clean())
+            username = form.clean()['username']
+            password = form.clean()['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+            return redirect('home')
+        return render(request, self.template_name, context={'form': form})
+
+class UserLogoutView(LoginRequiredMixin, View):
+    def get(self, request):
+        logout(request)
+        return redirect('Login')
 
 
 class TaskDetailView(DetailView): # open task

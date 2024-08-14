@@ -2,10 +2,12 @@ from django.contrib import admin
 from django.urls import path
 
 from core.apps.singer.views import index, index2, index3, index4, index5, index6_1, index6_2, add_category, add_task,watch_likes
-from core.apps.singer.views import UserRegistrationView, TaskListViews, TaskDetailView, TaskCreateView, CategoryCreateView, FavouriteTaskListViews, DrugsListViews, LikesListViews, HistoryListViews, SeenTaskListViews, CategoryListViews
+from core.apps.singer.views import UserRegistrationView, UserLoginView, UserLogoutView, TaskListViews, TaskDetailView, TaskCreateView, CategoryCreateView, FavouriteTaskListViews, DrugsListViews, LikesListViews, HistoryListViews, SeenTaskListViews, CategoryListViews
 
 urlpatterns = [
-    path('registration/', UserRegistrationView.as_view(), name='UserRegistration'),
+    path('registration/', UserRegistrationView.as_view(), name='Registration'),
+    path('login/', UserLoginView.as_view(), name='Login'),
+    path('logout/', UserLogoutView.as_view(), name='Logout'),
 
     path('tasks/', TaskListViews.as_view(), name='home'),
     path('tasks/add_task', TaskCreateView.as_view(), name='add_task'),
