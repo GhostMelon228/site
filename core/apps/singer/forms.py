@@ -111,32 +111,27 @@ class UserRegistrationForm(UserCreationForm):
             return self.add_error('password1', 'Пароли не совпадают!')
 
         return password2
-    '''
-    def validate_password(password, user=None, password_validators=None):
-
-        errors = []
-        if password_validators is None:
-            password_validators = password_validation.get_default_password_validators()
-            print(password_validators)
-        for validator in password_validators:
-            try:
-                validator.validate(password, user)
-            except ValidationError as error:
-                errors.append(error)
-                print(error)
-        if errors:
-            raise ValidationError(errors)
+    
 
     def _post_clean(self):
-        super()._post_clean()
+        super(forms.BaseModelForm, self)._post_clean()
         password = self.cleaned_data.get("password2")
         if password:
             try:
-                self.validate_password(password, self.instance)
+                print(self.instance, 'jkgjhmgjf')
+                password_validation.validate_password(password, self.instance)
             except ValidationError as error:
-                print(error)
-                self.add_error("password2", error)
-    '''
+                for e in error:
+                    print(e, type(e))
+                    if e == 'This password is too short. It must contain at least 8 characters.':
+                        self.add_error("password1", 'Пароль слишком короткий (минимум 8 символов).')
+                    if e == 'This password is too common.':
+                        self.add_error("password1", 'Пароль, ну, слишком популярный.')
+                    if e == 'This password is entirely numeric.':
+                        self.add_error("password1", 'Пароль, состоящий только из цифр, не оч')
+                print(error, type(error))
+                #self.add_error("password2", error)
+
     def is_valid(self) -> bool:
 
         errors = self.errors.as_data()

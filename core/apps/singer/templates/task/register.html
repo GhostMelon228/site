@@ -34,12 +34,13 @@
 
                         <div class="input-group mb-2">
                             <span class="input-group-text"><i class="bi bi-key"></i>{{form.password1.label}}</span>
-                            {{form.password1}}{{form.password1.errors}}
+                            {{form.password1}}
                         </div>
                         <div class="input-group mb-2">
                             <span class="input-group-text"><i class="bi bi-key-fill"></i>{{form.password2.label}}</span>
                             {{form.password2}}{{form.password2.errors}}
                         </div>
+                        {{form.password1.errors}}
 
                         <button class="btn btn-primary col-12">Создать 🎉</button>
                         
