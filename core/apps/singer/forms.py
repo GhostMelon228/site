@@ -11,7 +11,7 @@ from django.core.exceptions import (
 
 from core.apps.singer.models import Category, Task
 
-class UserRegistrationForm(forms.BaseModelForm, UserCreationForm):
+class UserRegistrationForm(UserCreationForm):
     password1 = forms.CharField(
             required=False,
             widget=forms.PasswordInput(
@@ -111,7 +111,7 @@ class UserRegistrationForm(forms.BaseModelForm, UserCreationForm):
             return self.add_error('password1', 'Пароли не совпадают!')
 
         return password2
-    
+    '''
     def validate_password(password, user=None, password_validators=None):
 
         errors = []
@@ -136,7 +136,7 @@ class UserRegistrationForm(forms.BaseModelForm, UserCreationForm):
             except ValidationError as error:
                 print(error)
                 self.add_error("password2", error)
-
+    '''
     def is_valid(self) -> bool:
 
         errors = self.errors.as_data()

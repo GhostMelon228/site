@@ -7,7 +7,7 @@ from core.apps.singer.views import UserRegistrationView, TaskListViews, TaskDeta
 urlpatterns = [
     path('registration/', UserRegistrationView.as_view(), name='UserRegistration'),
 
-    path('tasks/', TaskListViews.as_view()),
+    path('tasks/', TaskListViews.as_view(), name='home'),
     path('tasks/add_task', TaskCreateView.as_view(), name='add_task'),
     path('categories/add_category', CategoryCreateView.as_view(), name='add_category'),
 

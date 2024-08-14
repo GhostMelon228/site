@@ -30,7 +30,7 @@ class UserRegistrationView(CreateView):
             user = form.save(commit=False)
             user.save()
             login(request, user)
-            return render(request, self.template_name, {'form': form})
+            return redirect('home')
         else:
             messages.error(request, 'Ошибка регистрации')
             return render(request, self.template_name, {'form': form})
