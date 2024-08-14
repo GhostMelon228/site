@@ -1,0 +1,15 @@
+{% extends 'include/base.html' %}
+{% block body %}
+<div class="container">
+    <div class="card shadow mb-2">
+        <div class="card-body d-flex justify-content-between">
+            <div class="col-12 col-md-7">
+                <h4 class="mb-4">ОГО...</h4>
+                <h7 class="mb-4">Кажется, наш сервер не дееспособен выдать на ваш запрос соотвествующую страницу... печально
+                    РЕКОМЕНДАЦИЯ: Вернитесь, на <a href="{% url 'home' %}" class="text-decoration-none">главную страницу</a> или оттуда оттуда пришли
+                </h7>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

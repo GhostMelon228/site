@@ -15,6 +15,11 @@ from django.contrib import admin
 from django.urls import path, include
 from debug_toolbar.toolbar import debug_toolbar_urls
 
+handler400 = 'core.config.views.bad_request_400_view'
+handler403 = 'core.config.views.http_forbidden_403_view'
+handler404 = 'core.config.views.page_not_found_404_view'
+handler500 = 'core.config.views.server_error_500_view'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.apps.singer.urls')),
