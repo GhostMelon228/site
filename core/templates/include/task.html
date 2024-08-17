@@ -1,22 +1,33 @@
 <div class="card mb-2">
     <div class="card-header d-flex justify-content-between">
         <div>
-            <a class="link-body-emphasis link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
-            href="/tasks/{{task.pk}}">
-            Задача {{task.id}}
-            </a>
-            {% with first_user_task_like=task.usertaskenroll.all|first %}
-                {% if first_user_task_like.status %}
-                    <span class="badge text-bg-secondary">
-                        {{task.cnt_views}} <i class="bi bi-eye-fill"></i>
-                    </span>
-                {% else %}
-                    <span class="badge text-bg-secondary">
-                        {{task.cnt_views}} <i class="bi bi-eye-slash"></i>
-                    </span>
-                {% endif %}
+            {% if anon_user %}
+                <a class="link-body-emphasis link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+                    href="/login/">
+                    Задача {{task.id}}
+                </a>
+                <a class=link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hove 
+                    href="/login/">
+                    <i class="bi bi-question-octagon"></i>
+                </a>
+            {% else %}
+                <a class="link-body-emphasis link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+                    href="/tasks/{{task.pk}}">
+                    Задача {{task.id}}
+                </a>
+                {% with first_user_task_like=task.usertaskenroll.all|first %}
+                    {% if first_user_task_like.status %}
+                        <span class="badge text-bg-secondary">
+                            {{task.cnt_views}} <i class="bi bi-eye-fill"></i>
+                        </span>
+                    {% else %}
+                        <span class="badge text-bg-secondary">
+                            {{task.cnt_views}} <i class="bi bi-eye-slash"></i>
+                        </span>
+                    {% endif %}
 
-            {% endwith %}
+                {% endwith %}
+            {% endif %}
 
 
         </div>
@@ -24,31 +35,45 @@
             <span class="badge bg-danger-subtle text-bg-secondary">
                 {{task.cnt_bm}}
 
-                {% if task.savedtasks.all|first %}
+                {% if anon_user %}
                     <a class=link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hove 
-                        href="/bm/del/{{task.pk}}">
-                        <i class="bi bi-bookmarks-fill"></i>
-                    </a>
-                {% else %}
-                    <a class=link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hove
-                        href="/bm/add/{{task.pk}}">
+                        href="/login/">
                         <i class="bi bi-bookmark"></i>
                     </a>
+                {% else %}
+                    {% if task.savedtasks.all|first %}
+                        <a class=link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hove 
+                            href="/bm/del/{{task.pk}}">
+                            <i class="bi bi-bookmarks-fill"></i>
+                        </a>
+                    {% else %}
+                        <a class=link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hove
+                            href="/bm/add/{{task.pk}}">
+                            <i class="bi bi-bookmark"></i>
+                        </a>
+                    {% endif %}
                 {% endif %}
             </span>            
             <span class="badge bg-danger-subtle text-bg-secondary">
                 {{task.cnt_likes}}
 
-                {% if task.favouritetask.all|first %}
+                {% if anon_user %}
                     <a class=link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hove 
-                        href="/likes/del/{{task.pk}}">
-                        <i class="bi bi-heart-fill"></i>
-                    </a>
-                {% else %}
-                    <a class=link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hove
-                        href="/likes/add/{{task.pk}}">
+                        href="/login/">
                         <i class="bi bi-heart"></i>
                     </a>
+                {% else %}
+                    {% if task.favouritetask.all|first %}
+                        <a class=link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hove 
+                            href="/likes/del/{{task.pk}}">
+                            <i class="bi bi-heart-fill"></i>
+                        </a>
+                    {% else %}
+                        <a class=link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hove
+                            href="/likes/add/{{task.pk}}">
+                            <i class="bi bi-heart"></i>
+                        </a>
+                    {% endif %}
                 {% endif %}
             </span>
         </div>

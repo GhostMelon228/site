@@ -5,7 +5,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.db.models import Prefetch
 from django.urls import reverse
 from core.apps.singer.forms import UserRegistrationForm, UserLoginForm
@@ -71,8 +71,16 @@ class TaskDetailView(DetailView): # open task
     context_object_name="task"
     pk_url_kwarg="task_id"
 
+    def get(self, request, *args, **kwargs):
+        if self.request.user.is_anonymous:
+            return redirect('Login')
+        return super().get(self, request, *args, **kwargs)
 
-    def create_like(self, task_id):
+
+    def create_like(request, task_id):
+
+        if request.user.is_anonymous:
+            return redirect('Login')        
 
         task = Task.objects.get(pk=task_id)
         print(task)
@@ -80,47 +88,56 @@ class TaskDetailView(DetailView): # open task
         task.cnt_likes += 1
         task.save(update_fields=["cnt_likes"])
 
-        new = FavouriteTask.objects.create(user=self.request.user, task=task)
+        new = FavouriteTask.objects.create(user=request.user, task=task)
         new.save()
 
-        return HttpResponseRedirect(self.request.META["HTTP_REFERER"])
+        return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
-    def delete_like(self, task_id):
+    def delete_like(request, task_id):
+
+        if request.user.is_anonymous:
+            return redirect('Login')
 
         task = Task.objects.get(pk=task_id)
 
         task.cnt_likes -= 1
         task.save(update_fields=["cnt_likes"])
 
-        new = FavouriteTask.objects.get(user=self.request.user, task=task)
+        new = FavouriteTask.objects.get(user=request.user, task=task)
         new.delete()
 
-        return HttpResponseRedirect(self.request.META["HTTP_REFERER"])
+        return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 
-    def create_bm(self, task_id):
+    def create_bm(request, task_id):
+
+        if request.user.is_anonymous:
+            return redirect('Login')
 
         task = Task.objects.get(pk=task_id)
 
         task.cnt_bm += 1
         task.save(update_fields=["cnt_bm"])
 
-        new = Drugs.objects.create(user=self.request.user, task=task)
+        new = Drugs.objects.create(user=request.user, task=task)
         new.save()
 
-        return HttpResponseRedirect(self.request.META["HTTP_REFERER"])
+        return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
-    def delete_bm(self, task_id):
+    def delete_bm(request, task_id):
+
+        if request.user.is_anonymous:
+            return redirect('Login')
 
         task = Task.objects.get(pk=task_id)
 
         task.cnt_bm -= 1
         task.save(update_fields=["cnt_bm"])
 
-        new = Drugs.objects.get(user=self.request.user, task=task)
+        new = Drugs.objects.get(user=request.user, task=task)
         new.delete()
 
-        return HttpResponseRedirect(self.request.META["HTTP_REFERER"])   
+        return HttpResponseRedirect(request.META["HTTP_REFERER"])   
 
 
 class TaskListViews(ListView): # open all tasks
@@ -130,6 +147,11 @@ class TaskListViews(ListView): # open all tasks
     context_object_name="tasks"
 
     def get_queryset(self) -> QuerySet[Task]:
+        print(self.request.user, type(self.request.user))
+
+        if self.request.user.is_anonymous:
+            q = Task.objects.select_related("category").all()
+            return list(q)
 
         q = Task.objects.prefetch_related(
             Prefetch("usertaskenroll", queryset=UserTaskEnroll.objects.filter(user=self.request.user).select_related("user")),
@@ -143,6 +165,7 @@ class TaskListViews(ListView): # open all tasks
 
         context = super().get_context_data(**kwargs)
         context["title"] = 'Главная'
+        context["anon_user"] = self.request.user.is_anonymous           
 
         return context
 
@@ -171,6 +194,12 @@ class CategoryListViews(ListView):
         context["title"] = 'другая недогланая'
 
         return context
+    
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if self.request.user.is_anonymous:
+            return redirect('Login')
+        return super().get(request, *args, **kwargs)
+
 
 class HistoryListViews(ListView):
 
@@ -197,6 +226,11 @@ class HistoryListViews(ListView):
 
         return context
 
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if self.request.user.is_anonymous:
+            return redirect('Login')
+        return super().get(request, *args, **kwargs)
+
 class FavouriteTaskListViews(ListView):
 
     model=Task
@@ -218,6 +252,11 @@ class FavouriteTaskListViews(ListView):
         context["title"] = 'совсем совсем другая недогланая'
 
         return context
+    
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if self.request.user.is_anonymous:
+            return redirect('Login')
+        return super().get(request, *args, **kwargs)
 
 class DrugsListViews(ListView):
 
@@ -240,6 +279,11 @@ class DrugsListViews(ListView):
         context["title"] = 'ну вот совсем другая недогланая'
 
         return context
+    
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if self.request.user.is_anonymous:
+            return redirect('Login')
+        return super().get(request, *args, **kwargs)
 
 class SeenTaskListViews(ListView):
 
@@ -265,6 +309,11 @@ class SeenTaskListViews(ListView):
         context["title"] = 'совсем недогланая'
 
         return context
+    
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if self.request.user.is_anonymous:
+            return redirect('Login')
+        return super().get(request, *args, **kwargs)
 
 class LikesListViews(ListView):
     
@@ -287,6 +336,11 @@ class LikesListViews(ListView):
         context["title"] = 'другая jkhk недогланая'
 
         return context
+    
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if self.request.user.is_anonymous:
+            return redirect('Login')
+        return super().get(request, *args, **kwargs)
 
 # administrator's commands
 
@@ -388,7 +442,7 @@ def index6_2(request): #bookmarks page
     queryset = Drugs.objects.filter(user=request.user)
     print(queryset)
     
-    return render(request, "task/i.html")#, {'title': 'Главная', 'tasks': queryset})
+    return render(request, "task/i.html"), #{'title': 'Главная', 'tasks': queryset})
 
 def watch_likes(request, task_id):
     queryset = FavouriteTask.objects.filter(task_id=task_id)
